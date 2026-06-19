@@ -15,7 +15,7 @@ document.addEventListener("DOMContentLoaded", () => {
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 
     const heartVertices = [];
-    const totalPoints = 500; // Increased density for cleaner tracking edges
+    const totalPoints = 500; 
 
     // Heart Equation Mathematical Array Gen Loop
     for (let i = 0; i < totalPoints; i++) {
@@ -26,7 +26,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const y = 13 * Math.cos(t) - 5 * Math.cos(2*t) - 2 * Math.cos(3*t) - Math.cos(4*t);
         const z = (Math.random() - 0.5) * 1.0; 
 
-        // Perfectly proportioned multiplier factor to match normalized CSS frame scale
+        // Proportioned scaling factor to center lock layout inside canvas borders
         heartVertices.push(new THREE.Vector3(x * 0.435, y * 0.435, z));
     }
 
@@ -59,6 +59,11 @@ document.addEventListener("DOMContentLoaded", () => {
     // --- CINEMATIC SEQUENCE TIMELINE ENGINE ---
     let constructionProgress = 0;
     let animationComplete = false;
+    
+    // Core parameters governing the 3D local orbit loop speed
+    let targetRotationY = 0;
+    let targetRotationX = 0;
+    const rotationObject = { y: 0, x: 0 }; 
 
     const introTimeline = gsap.timeline();
     
@@ -75,11 +80,13 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 
+    // Unified Render Loop Engine handling Three.js and CSS 3D Matrix Parallax syncing
     function animate() {
         requestAnimationFrame(animate);
 
         const currentPositions = particleGeometry.attributes.position.array;
 
+        // Perform initial constellation line growth calculation
         for (let i = 0; i < totalPoints; i++) {
             const targetActivationIndex = totalPoints * constructionProgress;
             
@@ -89,12 +96,30 @@ document.addEventListener("DOMContentLoaded", () => {
                 currentPositions[i * 3 + 2] = THREE.MathUtils.lerp(currentPositions[i * 3 + 2], heartVertices[i].z, 0.07);
             }
         }
-        
         particleGeometry.attributes.position.needsUpdate = true;
 
+        // Interactive 3D Rotation engine triggers once construction finishes
         if(animationComplete) {
-            particleSystem.rotation.y = Math.sin(Date.now() * 0.001) * 0.05;
-            particleSystem.rotation.x = Math.cos(Date.now() * 0.0008) * 0.03;
+            const time = Date.now() * 0.001;
+            
+            // Continuous 360-degree mathematical circular orbit pattern loop
+            rotationObject.y = time * 0.4; 
+            rotationObject.x = Math.sin(time * 0.5) * 0.15; // Smooth harmonic nodding angle swing
+
+            // Map variables perfectly onto WebGL matrix
+            particleSystem.rotation.y = rotationObject.y;
+            particleSystem.rotation.x = rotationObject.x;
+
+            // Map exact matching variables onto the HTML Photo container wrapper
+            const frame = document.getElementById('heartFrame');
+            if (frame) {
+                // Convert radians directly to clean CSS rotation angles
+                const degY = (rotationObject.y * (180 / Math.PI)) % 360;
+                const degX = rotationObject.x * (180 / Math.PI);
+                
+                // We keep translate(-50%, -50%) to ensure it centers flawlessly on any screen size
+                frame.style.transform = `translate(-50%, -50%) scale(1) rotateY(${degY}deg) rotateX(${degX}deg)`;
+            }
         }
 
         renderer.render(scene, camera);
@@ -104,21 +129,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
     function revealPhotoFrame() {
         const frame = document.getElementById('heartFrame');
-        const photo = document.querySelector('.family-photo');
         const btn = document.getElementById('btnProceed');
 
-        // Smooth cinematic reveal transitions directly into the computed center
+        // Smoothly bring the heart frame to life at scale(1)
         gsap.to(frame, {
             opacity: 1,
-            scale: 1,
             duration: 1.5,
             ease: "power2.out"
-        });
-
-        gsap.to(photo, {
-            scale: 1.0,
-            duration: 6,
-            ease: "power1.out"
         });
 
         gsap.to(btn, {
@@ -129,6 +146,23 @@ document.addEventListener("DOMContentLoaded", () => {
             ease: "back.out(1.5)"
         });
     }
+
+    // Interactive Mouse & Gyro Floating 3D Parallax system inside the heart container
+    window.addEventListener('mousemove', (e) => {
+        if (!animationComplete) return;
+
+        // Calculate normalized device coordinates (-1 to 1) from the center of the viewport
+        const nx = (e.clientX / window.innerWidth) * 2 - 1;
+        const ny = -(e.clientY / window.innerHeight) * 2 + 1;
+
+        // Offset the image texture slightly within its boundaries to create depth separation
+        gsap.to('.family-photo', {
+            x: nx * 15,
+            y: -ny * 15,
+            duration: 0.6,
+            ease: "power1.out"
+        });
+    });
 
     // --- VIEW CONTROLLER ---
     document.getElementById('btnProceed').addEventListener('click', () => {
