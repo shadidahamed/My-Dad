@@ -1,4 +1,3 @@
-/* Custom Global Reset & Variables mimicking Sony/Marvel premium dark look */
 :root {
     --bg-dark: #06070d;
     --neon-pink: #ff2a74;
@@ -25,7 +24,6 @@ body {
     width: 100vw;
 }
 
-/* Premium Cinematic Cinematic Environments */
 .nebula-bg {
     position: absolute;
     top: -50%; left: -50%; width: 200%; height: 200%;
@@ -73,7 +71,7 @@ body {
     padding: 20px;
 }
 
-/* 3D Engine Frame Sizing */
+/* 3D Engine Frame Setup */
 .canvas-wrapper {
     position: relative;
     width: 100%;
@@ -92,24 +90,27 @@ body {
     pointer-events: none;
 }
 
-/* Heart-Shaped Masking Framework & Image Integration */
+/* Perfect Geometric Layout Calibration */
 .heart-frame-container {
-    position: relative;
+    position: absolute;
     width: 320px;
     height: 320px;
+    top: 50%;
+    left: 50%;
+    margin-top: -160px; /* Exact negative radius offset */
+    margin-left: -160px;
     z-index: 4;
     opacity: 0;
-    transform: scale(0.6) rotateY(25deg);
-    transition: filter 0.5s ease;
+    transform: scale(0.6);
+    pointer-events: none;
     filter: drop-shadow(0 0 35px var(--neon-glow));
 }
 
 .heart-clipper {
-    width: 100%;
-    height: 100%;
-    /* Mathematical Heart Vector Clipping Path applied via hardware acceleration mask */
-    clip-path: url(#heart-mask);
-    -webkit-clip-path: path("M160,288C154,288 32,192 32,112C32,64 68,32 112,32C138,32 152,48 160,60C168,48 182,32 208,32C252,32 288,64 288,112C288,192 166,288 160,288Z");
+    position: absolute;
+    inset: 0;
+    clip-path: url(#svgHeartMask);
+    -webkit-clip-path: url(#svgHeartMask);
     background: #000;
 }
 
@@ -117,20 +118,22 @@ body {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    transform: scale(1.15);
+    object-position: center 25%; /* Calibrates frame vertical crop focus to the eyes/faces */
+    transform: scale(1.1);
     transition: transform 6s cubic-bezier(0.1, 1, 0.1, 1);
 }
 
 .heart-border-glow {
     position: absolute;
-    inset: -3px;
-    -webkit-clip-path: path("M160,288C154,288 32,192 32,112C32,64 68,32 112,32C138,32 152,48 160,60C168,48 182,32 208,32C252,32 288,64 288,112C288,192 166,288 160,288Z");
+    inset: -2px;
+    clip-path: url(#svgHeartMask);
+    -webkit-clip-path: url(#svgHeartMask);
     background: linear-gradient(135deg, var(--neon-pink), #a015ff, var(--neon-pink));
     z-index: -1;
-    opacity: 0.8;
+    opacity: 0.85;
 }
 
-/* Premium Interactive Button Architecture */
+/* Premium Buttons & Controls */
 .btn-premium {
     position: relative;
     background: transparent;
@@ -171,7 +174,6 @@ body {
     transform: scale(1.03);
 }
 
-/* Background Equation Decorative Overlays */
 .equation-watermark {
     position: absolute;
     bottom: 25px;
@@ -184,7 +186,7 @@ body {
     z-index: 1;
 }
 
-/* Glassmorphic Layer Engine */
+/* Message Layer Panels */
 .glass-card-scroll-wrapper {
     width: 100%;
     max-width: 620px;
@@ -262,7 +264,6 @@ body {
     margin: 40px 0;
 }
 
-/* Call To Action Platform Connectors */
 .action-footer {
     display: flex;
     flex-wrap: wrap;
@@ -298,7 +299,6 @@ body {
     margin-right: 10px;
 }
 
-/* Premium Native Inline CSS QR Architecture */
 .qr-micro-wrapper {
     display: flex;
     align-items: center;
@@ -360,15 +360,17 @@ body {
     display: none !important;
 }
 
-/* Adaptive Layout Engine for Responsive Matrix */
+/* Viewport Adjustments */
 @media (max-width: 768px) {
     .canvas-wrapper {
         width: 100%;
-        height: 420px;
+        height: 380px;
     }
     .heart-frame-container {
-        width: 250px;
-        height: 250px;
+        width: 240px;
+        height: 240px;
+        margin-top: -120px;
+        margin-left: -120px;
     }
     .glass-card {
         padding: 30px 24px;
