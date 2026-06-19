@@ -3,513 +3,87 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mathematical Way to Say I Love You</title>
-    <style>
-        :root {
-            --bg-color: #0d1117;
-            --heart-glow: rgba(255, 68, 102, 0.7);
-            --primary-accent: #ff4d6d;
-            --text-color: #ffffff;
-            --text-secondary: rgba(255, 255, 255, 0.7);
-            --glass-bg: rgba(255, 255, 255, 0.05);
-            --glass-border: rgba(255, 255, 255, 0.1);
-        }
-
-        body, html {
-            margin: 0;
-            padding: 0;
-            width: 100%;
-            height: 100%;
-            overflow: hidden;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: var(--bg-color);
-            color: var(--text-color);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            perspective: 1000px; /* Essential for 3D */
-        }
-
-        /* --- Background --- */
-        #background {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            z-color: -1;
-            background-image: 
-                radial-gradient(circle at 50% 50%, #1a2333 0%, #0d1117 100%),
-                url('image_1.png'); /* The grid/equation image is used as a faint backdrop pattern */
-            background-size: cover;
-            background-repeat: no-repeat;
-            background-position: center;
-            filter: blur(10px) opacity(0.15);
-        }
-
-        /* --- Scene Container --- */
-        #scene {
-            width: 100%;
-            height: 100%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            flex-direction: column;
-            position: relative;
-        }
-
-        /* --- 3D Heart Container --- */
-        #heart-container {
-            width: 300px;
-            height: 300px;
-            position: relative;
-            transform-style: preserve-3d;
-            cursor: pointer;
-            display: none; /* Hidden during loading */
-            transition: transform 0.5s ease-out;
-        }
-
-        #heart-container.loaded {
-            display: block;
-            animation: heartEnter 1s ease-out forwards, heartbeat 2s infinite 1s;
-        }
-
-        #heart-container:hover {
-            transform: scale(1.05) rotateY(10deg);
-        }
-
-        /* The canvas where particles draw the heart */
-        #canvas3d {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-        }
-
-        /* --- The Image inside the Heart --- */
-        #heart-image-mask {
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
-            border-radius: 50% 50% 0 0;
-            transform: translateZ(50px); /* 3D depth for the image */
-            overflow: hidden;
-            background: rgba(0,0,0,0.5); /* Prevents flash */
-            opacity: 0;
-            transition: opacity 1s ease-in;
-            box-shadow: 0 0 50px var(--heart-glow);
-        }
-
-        #heart-image-mask.complete {
-            opacity: 1;
-        }
-
-        #heart-photo {
-            width: 100%;
-            height: 100%;
-            object-fit: cover; /* Important to fill the heart */
-            mask-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path fill="red" d="M462.3 62.6C407.5 15.9 326 24.3 275.7 76.2L256 96.5l-19.7-20.3C186.1 24.3 104.5 15.9 49.7 62.6c-62.8 53.6-66.1 149.8-9.9 207.9l193.5 199.8c12.5 12.9 32.8 12.9 45.3 0l193.5-199.8c56.3-58.1 53-154.3-9.8-207.9z"/></svg>');
-            -webkit-mask-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path fill="red" d="M462.3 62.6C407.5 15.9 326 24.3 275.7 76.2L256 96.5l-19.7-20.3C186.1 24.3 104.5 15.9 49.7 62.6c-62.8 53.6-66.1 149.8-9.9 207.9l193.5 199.8c12.5 12.9 32.8 12.9 45.3 0l193.5-199.8c56.3-58.1 53-154.3-9.8-207.9z"/></svg>');
-            mask-size: cover;
-            -webkit-mask-size: cover;
-            mask-position: center;
-            -webkit-mask-position: center;
-            transform: scale(1.1); /* Slight overflow to fill edges */
-        }
-
-        /* 3D Heart Frame Effect */
-        #heart-image-mask::after {
-            content: '';
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
-            box-sizing: border-box;
-            border: 8px solid;
-            border-image: linear-gradient(to bottom right, #ff4d6d, #ff8fa3) 1;
-            box-shadow: 0 0 20px #ff4d6d, inset 0 0 10px rgba(0,0,0,0.5);
-            pointer-events: none;
-            mask-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path fill="black" d="M462.3 62.6C407.5 15.9 326 24.3 275.7 76.2L256 96.5l-19.7-20.3C186.1 24.3 104.5 15.9 49.7 62.6c-62.8 53.6-66.1 149.8-9.9 207.9l193.5 199.8c12.5 12.9 32.8 12.9 45.3 0l193.5-199.8c56.3-58.1 53-154.3-9.8-207.9z" stroke="white" stroke-width="20"/></svg>');
-            -webkit-mask-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path fill="black" d="M462.3 62.6C407.5 15.9 326 24.3 275.7 76.2L256 96.5l-19.7-20.3C186.1 24.3 104.5 15.9 49.7 62.6c-62.8 53.6-66.1 149.8-9.9 207.9l193.5 199.8c12.5 12.9 32.8 12.9 45.3 0l193.5-199.8c56.3-58.1 53-154.3-9.8-207.9z" stroke="white" stroke-width="20"/></svg>');
-            mask-size: cover;
-            -webkit-mask-size: cover;
-            mask-position: center;
-            -webkit-mask-position: center;
-        }
-
-        /* --- Buttons --- */
-        #proceed-btn {
-            margin-top: 30px;
-            padding: 15px 40px;
-            border: 2px solid #ff4d6d;
-            background: transparent;
-            color: #ff4d6d;
-            font-size: 18px;
-            font-weight: bold;
-            border-radius: 30px;
-            cursor: pointer;
-            display: none;
-            transition: all 0.3s;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            position: relative;
-            overflow: hidden;
-            box-shadow: 0 0 20px rgba(255, 77, 109, 0.2);
-            font-family: inherit;
-        }
-
-        #proceed-btn::before {
-            content: '';
-            position: absolute;
-            top: 0; left: -100%; width: 100%; height: 100%;
-            background: linear-gradient(120deg, transparent, rgba(255, 77, 109, 0.4), transparent);
-            transition: 0.5s;
-        }
-
-        #proceed-btn:hover::before {
-            left: 100%;
-        }
-
-        #proceed-btn:hover, #proceed-btn:active {
-            background-color: #ff4d6d;
-            color: #0d1117;
-            box-shadow: 0 0 30px rgba(255, 77, 109, 0.6);
-            transform: scale(1.05);
-        }
-
-        /* --- Message Section --- */
-        #message-section {
-            display: none;
-            position: absolute;
-            top: 50%; left: 50%;
-            transform: translate(-50%, -50%);
-            width: 90%; max-width: 600px;
-            max-height: 85%;
-            border-radius: 20px;
-            padding: 40px;
-            box-sizing: border-box;
-            background: var(--glass-bg);
-            border: 1px solid var(--glass-border);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            box-shadow: 0 0 100px rgba(0,0,0,0.5);
-            opacity: 0;
-            overflow-y: auto; /* Scrollable text */
-            z-index: 10;
-        }
-
-        #message-section.open {
-            display: block;
-            animation: messageOpen 0.6s ease-out forwards;
-        }
-
-        /* Formatted Text in Message */
-        #message-content {
-            font-size: 1.1rem;
-            line-height: 1.8;
-            letter-spacing: 0.02em;
-            color: var(--text-secondary);
-        }
-
-        #message-content p { margin-top: 0; margin-bottom: 25px; }
-
-        .bold-text {
-            font-weight: bold;
-            color: var(--text-color);
-        }
-
-        .bangla-text {
-            font-family: 'SolaimanLipi', sans-serif; /* Example Bangla font */
-        }
-
-        .heart-icon { color: #ff4d6d; margin: 0 5px; }
-
-        /* Equation integration - background element in message */
-        #equation-visual {
-            font-family: 'Cambria Math', 'Times New Roman', serif;
-            font-size: 0.8em;
-            color: rgba(255, 68, 102, 0.2);
-            text-align: center;
-            margin: 20px 0;
-            pointer-events: none;
-            border-top: 1px solid rgba(255,255,255,0.1);
-            border-bottom: 1px solid rgba(255,255,255,0.1);
-            padding: 10px 0;
-        }
-
-        /* --- Messenger Integration --- */
-        #messenger-integration {
-            margin-top: 30px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 15px;
-            border-top: 1px solid var(--glass-border);
-            padding-top: 20px;
-        }
-
-        #send-messenger-btn {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            padding: 10px 25px;
-            background-color: #0084FF; /* Messenger blue */
-            color: white;
-            border: none;
-            border-radius: 20px;
-            text-decoration: none;
-            font-weight: bold;
-            font-size: 16px;
-            transition: all 0.3s;
-        }
-
-        #send-messenger-btn:hover {
-            box-shadow: 0 0 15px rgba(0, 132, 255, 0.5);
-            transform: scale(1.05);
-        }
-
-        #send-messenger-btn svg { width: 24px; height: 24px; }
-
-        #qr-display {
-            width: 150px;
-            height: 150px;
-            padding: 10px;
-            background: white;
-            border-radius: 15px;
-            box-shadow: 0 0 20px rgba(255,255,255,0.2);
-        }
-
-        #qr-display img {
-            width: 100%; height: 100%;
-            object-fit: cover;
-        }
-
-        #messenger-id-text {
-            color: var(--text-secondary);
-            font-size: 0.9em;
-        }
-
-        /* --- Animations --- */
-        @keyframes heartEnter {
-            from { opacity: 0; transform: scale(0.5) translateZ(-200px); }
-            to { opacity: 1; transform: scale(1) translateZ(0); }
-        }
-
-        @keyframes heartbeat {
-            0% { transform: scale(1); }
-            15% { transform: scale(1.1); }
-            30% { transform: scale(1); }
-            45% { transform: scale(1.1); }
-            100% { transform: scale(1); }
-        }
-
-        @keyframes messageOpen {
-            from { opacity: 0; top: 60%; transform: translate(-50%, -50%) scale(0.95); }
-            to { opacity: 1; top: 50%; transform: translate(-50%, -50%) scale(1); }
-        }
-
-        /* --- Loading Screen --- */
-        #loading-screen {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: var(--bg-color);
-            display: flex; justify-content: center; align-items: center;
-            z-index: 100;
-        }
-        #loading-screen p { color: var(--text-color); font-size: 1.2rem; }
-
-        /* --- Mobile Responsiveness --- */
-        @media (max-width: 768px) {
-            #heart-container { width: 200px; height: 200px; }
-            #message-section { padding: 25px; }
-            #message-content { font-size: 1rem; }
-            #send-messenger-btn { padding: 8px 18px; font-size: 14px; }
-            #qr-display { width: 120px; height: 120px; }
-        }
-
-        @media (max-height: 600px) {
-            #scene { top: 10px; flex-direction: row; flex-wrap: wrap; gap: 10px; }
-            #proceed-btn { margin-top: 10px; padding: 10px 20px; }
-        }
-    </style>
+    <title>The Mathematical Pattern of Love</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700&family=Inter:wght@300;400;600&family=Hind+Siliguri:wght@400;600&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
 </head>
 <body>
 
-    <div id="background"></div>
+    <div class="nebula-bg"></div>
+    <div class="grid-overlay"></div>
 
-    <div id="loading-screen"><p>Constructing the Heart...</p></div>
-
-    <div id="scene">
-        <div id="heart-container">
-            <canvas id="canvas3d"></canvas>
-            <div id="heart-image-mask">
-                <img src="IMG-20260619-WA0011.jpg" alt="Heart Image" id="heart-photo">
-            </div>
-        </div>
-
-        <button id="proceed-btn">Proceed</button>
-    </div>
-
-    <div id="message-section">
-        <div id="message-content">
-            <p class="bangla-text">
-                <span class="bold-text">বাংলা:</span><br>
-                যদি আমার অনুভূতিগুলো একটি গণিতের সমীকরণ হতো, <br>
-                তাহলে তুমি হতে সেই ধ্রুবক যে আমার পুরো পৃথিবীকে পূর্ণ করে। <br>
-                আমার প্রতিটি হৃদস্পন্দনের সূত্র শেষ পর্যন্ত তোমার কাছেই ফিরে আসে। বাপ্পি!! <span class="heart-icon">♥</span>
-            </p>
-
-            <div id="equation-visual">
-                Equation Inspired by image_1.png:<br>
-                x = 16 sin³(t)<br>
-                y = 13 cos(t) - 5 cos(2t) - 2 cos(3t) - cos(4t)
-            </div>
-
-            <p>
-                <span class="bold-text">English:</span><br>
-                If my feelings were a mathematical equation, <br>
-                you would be the constant that completes my universe. <br>
-                Every heartbeat follows a pattern, and every pattern leads back to you. <span class="heart-icon">♥</span>
-            </p>
-
-            <div id="messenger-integration">
-                <a href="https://m.me/" target="_blank" id="send-messenger-btn">
-                    <svg viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M12 2C6.477 2 2 6.145 2 11.259c0 2.915 1.455 5.517 3.733 7.311V22l3.322-1.822c.907.252 1.874.388 2.863.388 5.523 0 10-4.145 10-9.259S17.523 2 12 2zm1.189 12.385-1.921-2.05L7.665 14.37c-.365.197-.803-.162-.656-.55l1.637-4.225c.108-.278.384-.447.674-.447s.566.169.674.447l1.921 2.05 3.782-2.036c.365-.197.803.162.656.55l-1.637 4.225c-.108.278-.384.447-.674.447-.291 0-.566-.169-.674-.447z"/>
-                    </svg>
-                    Send in Messenger
-                </a>
-
-                <div id="qr-display">
-                    <img src="image_2.png" alt="Messenger QR Code">
+    <main class="app-container">
+        
+        <section id="stage-one" class="view-stage">
+            <div class="canvas-wrapper">
+                <canvas id="three-canvas"></canvas>
+                
+                <div class="heart-frame-container" id="heartFrame">
+                    <div class="heart-clipper">
+                        <img src="IMG-20260619-WA0011.jpg" alt="Family Photo" class="family-photo">
+                    </div>
+                    <div class="heart-border-glow"></div>
                 </div>
-                <div id="messenger-id-text">Messenger ID: image_2.png (Provided asset)</div>
             </div>
-        </div>
-    </div>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const loadingScreen = document.getElementById('loading-screen');
-            const heartContainer = document.getElementById('heart-container');
-            const proceedBtn = document.getElementById('proceed-btn');
-            const messageSection = document.getElementById('message-section');
-            const heartImageMask = document.getElementById('heart-image-mask');
-            const canvas = document.getElementById('canvas3d');
-            const ctx = canvas.getContext('2d');
+            <div class="equation-watermark">
+                <p class="math-line">$$x = 16 \sin^3(t)$$</p>
+                <p class="math-line">$$y = 13 \cos(t) - 5 \cos(2t) - 2 \cos(3t) - \cos(4t)$$</p>
+            </div>
 
-            // Responsive canvas size
-            const size = 300;
-            canvas.width = size;
-            canvas.height = size;
+            <button class="btn-premium" id="btnProceed">
+                <span class="btn-text">Proceed</span>
+                <span class="btn-glow"></span>
+            </button>
+        </section>
 
-            // --- 3D Particle Heart Logic (Conceptualized from provided equation and image_0.png loop) ---
-            let particles = [];
-            let heartPoints = [];
-            const steps = 300; // Total segments to draw
-            let currentStep = 0;
-            const drawSpeed = 4; // Higher is faster
+        <section id="stage-two" class="view-stage hidden">
+            <div class="glass-card-scroll-wrapper">
+                <div class="glass-card">
+                    <div class="card-edge-light"></div>
+                    
+                    <div class="message-block en-lang">
+                        <span class="lang-tag">English</span>
+                        <h2>If my feelings were a mathematical equation,</h2>
+                        <p class="main-quote">you would be the constant that completes my universe.</p>
+                        <p class="sub-text">Every heartbeat follows a pattern, and every pattern leads back to you. ❤️</p>
+                    </div>
 
-            // Function to generate points based on the provided math heart equation from image_1.png
-            function generateHeartPoints() {
-                for (let t = 0; t <= Math.PI * 2; t += Math.PI * 2 / steps) {
-                    // Equation from provided image_1.png
-                    // We must scale and center the results for a 300x300 canvas
-                    const xMath = 16 * Math.pow(Math.sin(t), 3);
-                    const yMath = -(13 * Math.cos(t) - 5 * Math.cos(2 * t) - 2 * Math.cos(3 * t) - Math.cos(4 * t)); // Flip Y for standard orientation
+                    <div class="divider-line"></div>
 
-                    // Normalize and scale (Max math value is roughly 16x13)
-                    const scaleFactor = 6.5; 
-                    const x = (xMath * scaleFactor) + (canvas.width / 2);
-                    const y = (yMath * scaleFactor) + (canvas.height / 2.3); // Slight offset for better centering
+                    <div class="message-block bn-lang">
+                        <span class="lang-tag">বাংলা</span>
+                        <h2>যদি আমার অনুভূতিগুলো একটি গণিতের সমীকরণ হতো,</h2>
+                        <p class="main-quote">তাহলে তুমি হতে সেই ধ্রুবক যা আমার পুরো পৃথিবীকে পূর্ণ করে।</p>
+                        <p class="sub-text">আমার প্রতিটি হৃদস্পন্দনের সূত্র শেষ পর্যন্ত তোমার কাছেই ফিরে আসে।বাপ্পি। ❤️</p>
+                    </div>
 
-                    // Store point and give it random 3D-like z-depth for perspective (conceptualized from image_0.png random z)
-                    heartPoints.push({ x, y, z: (Math.random() - 0.5) * 40 }); 
-                }
-            }
+                    <div class="action-footer">
+                        <a href="https://m.me/" target="_blank" class="messenger-btn">
+                            <svg class="mess-icon" viewBox="0 0 24 24">
+                                <path d="M12 2C6.5 2 2 6.14 2 11.24c0 2.9 1.45 5.5 3.74 7.18V22l3.43-1.88c.88.24 1.8.37 2.83.37 5.5 0 10-4.14 10-9.25C22 6.14 17.5 2 12 2zm1.14 12.44L10.5 11.7l-4.22 2.74 4.64-4.93 2.64 2.74 4.2-2.74-4.66 4.93z"/>
+                            </svg>
+                            Connect on Messenger
+                        </a>
+                        
+                        <div class="qr-micro-wrapper">
+                            <span class="qr-caption">Scan to Connect Profile</span>
+                            <div class="qr-frame">
+                                <div class="qr-scanner-line"></div>
+                                <div class="qr-corners"></div>
+                                <div class="mock-qr-dots"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
 
-            // Function to draw particles forming the structure
-            function drawStructure() {
-                ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-                // Add cinematic glow effect
-                ctx.shadowBlur = 15;
-                ctx.shadowColor = 'rgba(255, 68, 102, 0.8)'; // Red/Pink from heart theme
-                ctx.lineWidth = 1.5;
-
-                // Draw completed lines
-                ctx.strokeStyle = 'rgba(255, 255, 255, 0.1)'; // Faint construction line
-                ctx.beginPath();
-                for (let i = 0; i < currentStep; i++) {
-                    const p1 = heartPoints[i];
-                    // Basic 3D perspective projection based on Z (conceptual depth)
-                    const scale = 1 + p1.z / 300; // Depth scaling
-                    ctx.lineTo(p1.x + p1.z * 0.1, p1.y + p1.z * 0.1); // Simple offset for depth illusion
-                }
-                ctx.stroke();
-
-                // Draw active, glowing leading particles (Intersecting step)
-                const intersectionCount = Math.min(drawSpeed * 2, steps - currentStep);
-                ctx.strokeStyle = '#ff4d6d'; // Bright heart color
-                ctx.shadowBlur = 20;
-
-                for (let i = 0; i < intersectionCount; i++) {
-                    if (currentStep + i >= steps) break;
-                    const p1 = heartPoints[currentStep + i];
-                    const p2 = heartPoints[(currentStep + i + 1) % steps];
-                    ctx.beginPath();
-                    // Apply depth perspective logic
-                    const factor = 1 + p1.z / 300;
-                    ctx.moveTo(p1.x + p1.z * 0.1, p1.y + p1.z * 0.1);
-                    ctx.lineTo(p2.x + p2.z * 0.1, p2.y + p2.z * 0.1);
-                    ctx.stroke();
-                }
-
-                currentStep += drawSpeed;
-
-                if (currentStep < steps) {
-                    requestAnimationFrame(drawStructure);
-                } else {
-                    // Construction complete.
-                    heartImageMask.classList.add('complete');
-                    proceedBtn.style.display = 'block';
-                    // We must complete perfectly to form the full heart.
-                    // Let's force a perfect closed shape now.
-                    finalizeShape();
-                }
-            }
-
-            function finalizeShape() {
-                ctx.shadowBlur = 10;
-                ctx.shadowColor = '#ff4d6d';
-                ctx.strokeStyle = '#ff4d6d';
-                ctx.lineWidth = 3;
-                ctx.beginPath();
-                ctx.moveTo(heartPoints[0].x + heartPoints[0].z*0.1, heartPoints[0].y + heartPoints[0].z*0.1);
-                for(let i=1; i<heartPoints.length; i++){
-                     ctx.lineTo(heartPoints[i].x + heartPoints[i].z*0.1, heartPoints[i].y + heartPoints[i].z*0.1);
-                }
-                ctx.closePath();
-                ctx.stroke();
-            }
-
-            // Start the sequence after ensuring images are loaded
-            window.addEventListener('load', () => {
-                loadingScreen.style.display = 'none';
-                heartContainer.classList.add('loaded'); // This triggers the CSS animations
-
-                generateHeartPoints();
-                requestAnimationFrame(drawStructure); // Starts construction animation
-            });
-
-            // --- Button/Message Logic ---
-            proceedBtn.addEventListener('click', () => {
-                messageSection.classList.add('open');
-                proceedBtn.style.display = 'none'; // Hide button when text is shown
-            });
-
-            // Messenger Integration placeholder warning for testing
-            const messengerBtn = document.getElementById('send-messenger-btn');
-            messengerBtn.addEventListener('click', (e) => {
-                if (window.location.protocol === 'file:') {
-                    e.preventDefault();
-                    alert("Sending to Messenger from a local file won't work in most browsers. This requires a web server.");
-                }
-            });
-
-        });
-    </script>
+    <script src="script.js"></script>
 </body>
 </html>
