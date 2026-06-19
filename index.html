@@ -1,13 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
+
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title> Love U Dad</title>
+<title>Mathematical Love Heart</title>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+
 
 <style>
 
@@ -15,115 +18,208 @@
 margin:0;
 padding:0;
 box-sizing:border-box;
-font-family:'Segoe UI',sans-serif;
+font-family:"Segoe UI",sans-serif;
 }
+
 
 body{
-overflow:hidden;
-background:
-radial-gradient(circle at top,#301934,#050510 70%);
+
 height:100vh;
+overflow:hidden;
+
+background:
+radial-gradient(circle at center,#3a0b35,#020207);
+
 color:white;
+
 }
 
 
-#canvas{
+
+canvas{
+
 position:absolute;
 inset:0;
+
 }
 
 
-.card{
+
+.container{
 
 position:absolute;
+
 top:50%;
 left:50%;
+
 transform:translate(-50%,-50%);
-width:min(90%,650px);
 
-padding:35px;
-
-background:rgba(255,255,255,.08);
-backdrop-filter:blur(20px);
-
-border:1px solid rgba(255,255,255,.2);
-
-border-radius:30px;
-
-box-shadow:
-0 30px 80px rgba(255,0,100,.3);
+width:92%;
+max-width:500px;
 
 text-align:center;
 
 }
 
 
-h1{
 
-font-size:42px;
-margin-bottom:15px;
+.heartBox{
 
-background:linear-gradient(90deg,#ff4d8d,#fff,#ff8fcf);
--webkit-background-clip:text;
-color:transparent;
+width:300px;
+height:300px;
+
+position:relative;
+
+margin:auto;
+
+}
+
+
+
+#imageHeart{
+
+
+position:absolute;
+
+left:50%;
+top:50%;
+
+transform:translate(-50%,-50%);
+
+
+width:180px;
+height:180px;
+
+
+object-fit:cover;
+
+
+clip-path:
+polygon(
+50% 95%,
+0% 42%,
+15% 15%,
+40% 15%,
+50% 35%,
+60% 15%,
+85% 15%,
+100% 42%
+);
+
+
+opacity:0;
+
+
+filter:
+drop-shadow(0 0 35px #ff237b);
+
+
+}
+
+
+
+.title{
+
+margin-top:10px;
+
+font-size:28px;
+
+font-weight:700;
+
+
+}
+
+
+
+.subtitle{
+
+margin-top:8px;
+
+opacity:.8;
+
+}
+
+
+
+button{
+
+
+margin-top:22px;
+
+padding:15px 45px;
+
+border:none;
+
+border-radius:50px;
+
+background:
+linear-gradient(45deg,#ff176b,#ff8ab8);
+
+color:white;
+
+font-size:17px;
+
+box-shadow:
+0 0 30px #ff176b;
+
+}
+
+
+
+.messagePanel{
+
+
+display:none;
+
+margin-top:20px;
+
+padding:20px;
+
+border-radius:25px;
+
+background:
+rgba(255,255,255,.12);
+
+backdrop-filter:blur(20px);
+
+
+}
+
+
+
+textarea{
+
+width:100%;
+
+height:110px;
+
+border-radius:15px;
+
+padding:15px;
+
+background:#050505;
+
+color:white;
+
+border:1px solid #777;
+
+}
+
+
+h2{
+
+font-size:22px;
 
 }
 
 
 .math{
 
-font-size:22px;
-margin:20px;
-line-height:1.7;
-color:#ffd6e8;
+font-size:14px;
 
-}
+margin-top:15px;
 
-
-.message{
-
-font-size:18px;
-line-height:1.8;
-opacity:.9;
-
-}
-
-
-.heart{
-
-font-size:60px;
-
-animation:pulse 1.5s infinite;
-
-}
-
-
-@keyframes pulse{
-
-50%{
-transform:scale(1.2);
-}
-
-}
-
-
-button{
-
-margin-top:25px;
-
-padding:14px 35px;
-
-border:none;
-border-radius:50px;
-
-background:#ff397e;
-color:white;
-
-font-size:17px;
-
-cursor:pointer;
-
-box-shadow:0 10px 30px #ff397e;
+color:#ffd0e5;
 
 }
 
@@ -131,17 +227,19 @@ box-shadow:0 10px 30px #ff397e;
 
 @media(max-width:600px){
 
-h1{
-font-size:30px;
+.heartBox{
+
+width:260px;
+height:260px;
+
 }
 
-.math{
-font-size:16px;
+.title{
+
+font-size:23px;
+
 }
 
-.message{
-font-size:15px;
-}
 
 }
 
@@ -150,73 +248,99 @@ font-size:15px;
 </head>
 
 
+
 <body>
 
 
-<canvas id="canvas"></canvas>
+
+<canvas id="scene"></canvas>
 
 
 
-<div class="card">
+<div class="container">
 
 
-<div class="heart">❤️</div>
+
+<div class="heartBox">
 
 
-<h1>
-A Mathematical Way To Say I Love You "Buppy"
-</h1>
+<img
+id="imageHeart"
+src="IMG-20260619-WA0011.jpg">
+
+
+</div>
+
+
+
+<div class="title">
+
+A Mathematical Way To Say I Love You ❤️
+
+</div>
 
 
 <div class="math">
 
 x = 16 sin³(t)
+<br>
+
+y = 13 cos(t)-5 cos(2t)-2 cos(3t)-cos(4t)
+
+</div>
+
+
+
+<div class="subtitle">
+
+একটি হৃদয়ের গল্প যা গণিত দিয়েও প্রকাশ করা যায়
+
+</div>
+
+
+
+<button onclick="openMessage()">
+
+Proceed
+
+</button>
+
+
+
+
+<div class="messagePanel" id="panel">
+
+
+<h2>
+Message Section
+</h2>
+
 
 <br>
 
-y = 13 cos(t)
-− 5 cos(2t)
-− 2 cos(3t)
-− cos(4t)
 
-</div>
+<textarea id="msg">
 
+My dad's message ❤️
 
-
-<div class="message">
+</textarea>
 
 
-<b>English:</b><br>
 
-If my feelings were a mathematical equation,
-you would be the constant that completes my universe.
-Every heartbeat follows a pattern,
-and every pattern leads back to you. ❤️
+<button onclick="sendMessage()">
 
+Send To Messenger
 
-<br><br>
-
-
-<b>বাংলা:</b><br>
-
-
-যদি আমার অনুভূতিগুলো একটি গণিতের সমীকরণ হতো,
-তাহলে তুমি হতে সেই ধ্রুবক
-যে আমার পুরো পৃথিবীকে পূর্ণ করে।
-
-আমার প্রতিটি হৃদস্পন্দনের সূত্র
-শেষ পর্যন্ত তোমার কাছেই ফিরে আসে বাবা। বিশ্ব বাবা দিবসের অসংখ্য শুভ কামান। ❤️
-
-
-</div>
-
-
-<button onclick="explode()">
-Feel The Love
 </button>
 
 
 </div>
+
+
+
+</div>
+
+
 
 
 
@@ -225,28 +349,46 @@ Feel The Love
 <script>
 
 
+// THREE JS HEART
+
+
 const scene =
 new THREE.Scene();
 
 
+
 const camera =
 new THREE.PerspectiveCamera(
+
 75,
+
 innerWidth/innerHeight,
+
 0.1,
+
 1000
+
 );
 
 
-camera.position.z=80;
+
+camera.position.z=70;
+
 
 
 
 const renderer =
 new THREE.WebGLRenderer({
-canvas:document.querySelector("#canvas"),
-alpha:true
+
+canvas:
+document.getElementById("scene"),
+
+alpha:true,
+
+antialias:true
+
 });
+
 
 
 renderer.setSize(
@@ -261,30 +403,19 @@ const group =
 new THREE.Group();
 
 
+
 scene.add(group);
 
 
 
 
-const material =
-new THREE.MeshStandardMaterial({
-
-color:0xff3b8d,
-emissive:0xff0044,
-emissiveIntensity:2,
-metalness:.5,
-roughness:.2
-
-});
-
-
-
 const light =
 new THREE.PointLight(
-0xff4f9a,
-5,
+0xff4f9d,
+10,
 200
 );
+
 
 scene.add(light);
 
@@ -292,92 +423,207 @@ scene.add(light);
 
 
 
-function heartPoint(t){
+const material =
+new THREE.MeshStandardMaterial({
+
+color:0xff297b,
+
+emissive:0xff0055,
+
+emissiveIntensity:3,
+
+metalness:.5,
+
+roughness:.3
+
+});
 
 
-let x =
-16*Math.pow(Math.sin(t),3);
 
 
-let y =
+
+function heart(t){
+
+
+return{
+
+
+x:
+16*Math.pow(Math.sin(t),3),
+
+
+y:
 13*Math.cos(t)
 -5*Math.cos(2*t)
 -2*Math.cos(3*t)
--Math.cos(4*t);
+-Math.cos(4*t)
 
-
-return {
-x:x,
-y:y
-}
 
 }
 
 
+}
 
 
-for(
-let i=0;
-i<800;
-i++
-){
+
+
+
+let particles=[];
+
+
+
+let total=900;
+
+
+
+for(let i=0;i<total;i++){
 
 
 let t =
-Math.random()*Math.PI*2;
+Math.PI*2*(i/total);
+
 
 
 let p =
-heartPoint(t);
+heart(t);
 
 
-let geometry =
+
+let dot =
+new THREE.Mesh(
+
 new THREE.SphereGeometry(
-.25,
+0.17,
 8,
 8
-);
+),
 
-
-
-let mesh =
-new THREE.Mesh(
-geometry,
 material
+
 );
 
 
 
-mesh.position.set(
-p.x,
-p.y,
-(Math.random()-.5)*15
+dot.position.set(
+0,
+0,
+0
 );
 
 
 
-group.add(mesh);
+group.add(dot);
 
 
 
-gsap.to(mesh.position,{
+particles.push({
 
-z:
-mesh.position.z+15,
+obj:dot,
 
-duration:
-2+Math.random()*3,
+target:{
 
-repeat:-1,
+x:p.x/2,
 
-yoyo:true,
+y:p.y/2,
 
-ease:"sine.inOut"
+z:(Math.random()-.5)*8
+
+}
+
 
 });
 
 
 }
+
+
+
+
+// constructing animation
+
+particles.forEach((p,i)=>{
+
+
+gsap.to(
+
+p.obj.position,
+
+{
+
+x:p.target.x,
+
+y:p.target.y,
+
+z:p.target.z,
+
+
+duration:3,
+
+
+delay:i*.002,
+
+
+ease:"power2.out"
+
+}
+
+
+);
+
+
+});
+
+
+
+
+
+setTimeout(()=>{
+
+
+gsap.to(
+
+group.scale,
+
+{
+
+x:1.15,
+y:1.15,
+z:1.15,
+
+duration:1,
+
+repeat:1,
+
+yoyo:true
+
+}
+
+
+);
+
+
+
+gsap.to(
+
+"#imageHeart",
+
+{
+
+opacity:1,
+
+duration:2
+
+}
+
+
+);
+
+
+
+},4500);
+
+
+
 
 
 
@@ -388,7 +634,9 @@ function animate(){
 requestAnimationFrame(animate);
 
 
-group.rotation.y += .003;
+
+group.rotation.y +=0.006;
+
 
 
 renderer.render(
@@ -397,43 +645,57 @@ camera
 );
 
 
+
 }
+
 
 animate();
 
 
 
 
-function explode(){
 
 
-group.children.forEach(p=>{
 
+function openMessage(){
 
-gsap.to(
-p.position,
-{
-
-x:p.position.x*3,
-y:p.position.y*3,
-z:p.position.z*3,
-
-duration:1,
-
-ease:"power3.out",
-
-yoyo:true,
-
-repeat:1
-
-
-});
-
-
-});
+document
+.getElementById("panel")
+.style.display="block";
 
 
 }
+
+
+
+
+
+function sendMessage(){
+
+
+let text =
+encodeURIComponent(
+
+document
+.getElementById("msg")
+.value
+
+);
+
+
+
+window.open(
+
+"https://m.me/?text="+text,
+
+"_blank"
+
+);
+
+
+}
+
+
 
 
 
@@ -444,7 +706,9 @@ window.onresize=()=>{
 camera.aspect =
 innerWidth/innerHeight;
 
+
 camera.updateProjectionMatrix();
+
 
 renderer.setSize(
 innerWidth,
@@ -457,6 +721,7 @@ innerHeight
 
 
 </script>
+
 
 
 </body>
