@@ -81,7 +81,8 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    perspective: 1200px;
+    perspective: 1600px;
+    transform-style: preserve-3d;
 }
 
 #three-canvas {
@@ -91,18 +92,20 @@ body {
     pointer-events: none;
 }
 
-/* Perfect Center Focus Alignment Matrix */
+/* Perfect Center Focus Alignment Matrix with True 3D depth context */
 .heart-frame-container {
     position: absolute;
     width: 290px;
     height: 290px;
     top: 50%;
     left: 50%;
-    transform: translate(-50%, -50%) scale(0.6); /* CSS transform handles absolute geometric offset */
+    /* Hardware acceleration handles anchor point transformation smoothly */
+    transform: translate(-50%, -50%) scale(0.6) rotateX(0deg) rotateY(0deg);
+    transform-style: preserve-3d;
     z-index: 4;
     opacity: 0;
     pointer-events: none;
-    filter: drop-shadow(0 0 30px var(--neon-glow));
+    filter: drop-shadow(0 0 35px var(--neon-glow));
 }
 
 .heart-clipper {
@@ -111,15 +114,18 @@ body {
     clip-path: url(#svgHeartMask);
     -webkit-clip-path: url(#svgHeartMask);
     background: #000;
+    transform-style: preserve-3d;
+    /* Pushes image forward slightly along the Z-axis for a clear parallax feel */
+    transform: translateZ(15px); 
 }
 
 .family-photo {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    object-position: center 35%; /* Adjusts framing directly down over user profiles cleanly */
-    transform: scale(1.15);
-    transition: transform 6s cubic-bezier(0.1, 1, 0.1, 1);
+    object-position: center 35%; 
+    transform: scale(1.25);
+    transition: transform 0.2s ease-out; /* Keeps mouse/gyro floating movements silky smooth */
 }
 
 .heart-border-glow {
@@ -130,9 +136,11 @@ body {
     background: linear-gradient(135deg, var(--neon-pink), #a015ff, var(--neon-pink));
     z-index: -1;
     opacity: 0.9;
+    /* Keeps the border slightly back to create visible structural depth edges */
+    transform: translateZ(-5px); 
 }
 
-/* Marvel / Sony Style Interactive Buttons */
+/* Premium Buttons & Controls */
 .btn-premium {
     position: relative;
     background: transparent;
